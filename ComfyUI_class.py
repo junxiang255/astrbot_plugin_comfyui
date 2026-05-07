@@ -15,8 +15,10 @@ class ComfyUIClient:
         print(self.base_url)
         # print(response.json())
         system_stats=response.json()
-        print("系统是:",system_stats["system"]["os"])
-        print("显卡是:",system_stats["devices"][0]["name"])
+        sytsem=system_stats["system"]["os"]
+        device=system_stats["devices"][0]["name"]
+        # print("系统是:",system_stats["system"]["os"])
+        # print("显卡是:",system_stats["devices"][0]["name"])
         return response.json()
     def get_queue_status(self) -> Dict[str, Any]:
         """获取队列状态"""
@@ -102,7 +104,7 @@ class WorkflowBuilder:
         }
         self.node_counter += 1
         return node_id
-    def add_lord_1(self,lora_name:str,strength_model:float,strength_clip=float)-> int:
+    def add_lord_style(self,lora_name:str,strength_model:float,strength_clip=float)-> int:
         node_id = self.node_counter
         self.workflow[str(node_id)]={
             "inputs": { "lora_name":lora_name,
@@ -118,7 +120,7 @@ class WorkflowBuilder:
 
         self.node_counter += 1
         return node_id
-    def add_load_2(self,lora_name:str,strength_model:float,strength_clip=float)-> int:
+    def add_load_character(self,lora_name:str,strength_model:float,strength_clip=float)-> int:
         node_id = self.node_counter
         self.workflow[str(node_id)]={
             "inputs": { "lora_name":lora_name,
@@ -134,7 +136,7 @@ class WorkflowBuilder:
         }
         self.node_counter += 1
         return node_id
-    def add_load_3(self,lora_name:str,strength_model:float,strength_clip=float)-> int:
+    def add_load_Other_1(self,lora_name:str,strength_model:float,strength_clip=float)-> int:
         node_id = self.node_counter
         self.workflow[str(node_id)]={
             "inputs": { "lora_name":lora_name,
@@ -150,7 +152,7 @@ class WorkflowBuilder:
         }
         self.node_counter += 1
         return node_id
-    def add_load_4(self,lora_name:str,strength_model:float,strength_clip=float)-> int:
+    def add_load_Other_2(self,lora_name:str,strength_model:float,strength_clip=float)-> int:
         node_id = self.node_counter
         self.workflow[str(node_id)]={
             "inputs": { "lora_name":lora_name,
@@ -166,7 +168,7 @@ class WorkflowBuilder:
         }
         self.node_counter += 1
         return node_id
-    def add_load_5(self,lora_name:str,strength_model:float,strength_clip=float)-> int:
+    def add_load_clothes(self,lora_name:str,strength_model:float,strength_clip=float)-> int:
         node_id = self.node_counter
         self.workflow[str(node_id)]={
             "inputs": { "lora_name":lora_name,
@@ -182,7 +184,7 @@ class WorkflowBuilder:
         }
         self.node_counter += 1
         return node_id
-    def add_load_6(self,lora_name:str,strength_model:float,strength_clip=float)-> int:
+    def add_load_sex(self,lora_name:str,strength_model:float,strength_clip=float)-> int:
         node_id = self.node_counter
         self.workflow[str(node_id)]={
             "inputs": { "lora_name":lora_name,
@@ -209,7 +211,7 @@ class WorkflowBuilder:
                 "cfg": 5.7,
                 "sampler_name": "euler_ancestral",
                 "scheduler": "karras",
-                "denoise": 0.8,
+                "denoise": 1,
                 "model": ["7",0],
                 "positive": ["9",0],
                 "negative": ["10",0],
@@ -288,6 +290,220 @@ class WorkflowBuilder:
             "inputs": {
                 "filename_prefix": "ComfyUI",
                 "images": ["12", 0]
+            },
+            "class_type": "SaveImage",
+            "_meta": {
+            "title": "保存图像"
+            }
+        }
+        self.node_counter += 1
+        return node_id
+
+    def build(self) -> Dict[str, Any]:
+
+        return self.workflow
+class custom_WorkflowBuilder:
+    def __init__(self):
+        self.workflow={}
+        self.node_counter=1
+    def add_checkpoint_loader(self,ckpt_name) -> int:
+        node_id = self.node_counter
+        self.workflow[str(node_id)]={
+            "inputs": { "ckpt_name":ckpt_name },
+            "class_type":"CheckpointLoaderSimple",
+            "_meta": {
+                "title": "Checkpoint加载器（简易）"
+            }
+        }
+        self.node_counter += 1
+        return node_id
+    def add_lord_style(self,lora_name:str,strength_model:float,strength_clip:float)-> int:
+        node_id = self.node_counter
+        self.workflow[str(node_id)]={
+            "inputs": { "lora_name":lora_name,
+            "strength_model":strength_model,
+            "strength_clip": strength_clip,
+            "model":[f"{node_id-1}",0],
+            "clip":[f"{node_id-1}",1]
+            },
+            "class_type": "LoraLoader",
+            "_meta": {
+                "title": "画风LoRA"}
+        }
+
+        self.node_counter += 1
+        return node_id
+    def add_load_character(self,lora_name:str,strength_model:float,strength_clip:float)-> int:
+        node_id = self.node_counter
+        self.workflow[str(node_id)]={
+            "inputs": { "lora_name":lora_name,
+            "strength_model":strength_model,
+            "strength_clip": strength_clip,
+            "model":[f"{node_id-1}",0],
+            "clip":[f"{node_id-1}",1]
+            },
+            "class_type": "LoraLoader",
+            "_meta": {
+            "title": "人物LoRA"
+            }
+        }
+        self.node_counter += 1
+        return node_id
+    def add_load_Other_1(self,lora_name:str,strength_model:float,strength_clip:float)-> int:
+        node_id = self.node_counter
+        self.workflow[str(node_id)]={
+            "inputs": { "lora_name":lora_name,
+            "strength_model":strength_model,
+            "strength_clip": strength_clip,
+            "model":[f"{node_id-1}",0],
+            "clip":[f"{node_id-1}",1]
+            },
+            "class_type": "LoraLoader",
+            "_meta": {
+            "title": "眼睛LoRA"
+            }
+        }
+        self.node_counter += 1
+        return node_id
+    def add_load_Other_2(self,lora_name:str,strength_model:float,strength_clip:float)-> int:
+        node_id = self.node_counter
+        self.workflow[str(node_id)]={
+            "inputs": { "lora_name":lora_name,
+            "strength_model":strength_model,
+            "strength_clip": strength_clip,
+            "model":[f"{node_id-1}",0],
+            "clip":[f"{node_id-1}",1]
+            },
+            "class_type": "LoraLoader",
+            "_meta": {
+            "title": "手部LoRA"
+            }
+        }
+        self.node_counter += 1
+        return node_id
+    def add_load_clothes(self,lora_name:str,strength_model:float,strength_clip:float,)-> int:
+        node_id = self.node_counter
+        self.workflow[str(node_id)]={
+            "inputs": { "lora_name":lora_name,
+            "strength_model":strength_model,
+            "strength_clip": strength_clip,
+            "model":[f"{node_id-1}",0],
+            "clip":[f"{node_id-1}",1]
+            },
+            "class_type": "LoraLoader",
+            "_meta": {
+            "title": "衣服LoRA"
+            }
+        }
+        self.node_counter += 1
+        return node_id
+    def add_load_sex(self,lora_name:str,strength_model:float,strength_clip:float)-> int:
+        node_id = self.node_counter
+        self.workflow[str(node_id)]={
+            "inputs": { "lora_name":lora_name,
+            "strength_model":strength_model,
+            "strength_clip": strength_clip,
+            "model":[f"{node_id-1}",0],
+            "clip":[f"{node_id-1}",1]
+            },
+            "class_type": "LoraLoader",
+            "_meta": {
+            "title": "色色LoRA"
+            }
+        }
+        self.node_counter += 1
+        return node_id
+    def add_ksampler(self) -> int:
+        seed=random.randint(1, 999999999999999)
+        print(seed)
+        node_id=self.node_counter
+        self.workflow[str(node_id)]={
+            "inputs": {
+                "seed": seed ,
+                "steps": 27,
+                "cfg": 5.7,
+                "sampler_name": "euler_ancestral",
+                "scheduler": "karras",
+                "denoise": 1,
+                "model": [f"{node_id-1}",0],
+                "positive": [f"{node_id+1}",0],
+                "negative": [f"{node_id+2}",0],
+                "latent_image": [f"{node_id+3}",0]
+            },
+            "class_type": "KSampler",
+            "_meta": {
+            "title": "K采样器"}
+
+        }
+        self.node_counter += 1
+        return node_id
+
+    def add_text_encoder(self,text:str,)-> int:
+        node_id = self.node_counter
+        
+        self.workflow[str(node_id)]={
+            "inputs": {
+                "text": text,
+                "clip":[f"{node_id-2}", 1]
+            },
+            "class_type": "CLIPTextEncode",
+            "_meta": {
+                "title": "正向提示词"
+            }
+        }
+
+        self.node_counter += 1
+        return node_id
+    def add_Negative_text_encoder(self,text:str)-> int:
+        node_id = self.node_counter
+        self.workflow[str(node_id)] = {
+            "inputs": {
+                "text": text,
+                "clip": [f"{node_id-3}", 1]
+
+            },
+            "class_type": "CLIPTextEncode",
+            "_meta": {
+                "title": "负面提示词"
+            }
+        }
+        self.node_counter += 1
+        return node_id
+    def add_Latent(self,width:int,height:int,batch_size:int)-> int:
+        node_id=self.node_counter
+        self.workflow[str(node_id)] = {
+            "inputs": {
+                "width": width,
+                "height": height,
+                "batch_size":batch_size,
+            },
+            "class_type": "EmptyLatentImage",
+            "_meta": {
+            "title": "空Latent图像"}
+        }
+        self.node_counter += 1
+        return node_id
+    def add_vae_decode(self) -> int:
+        node_id = self.node_counter
+        self.workflow[str(node_id)] = {
+            "inputs": {
+                "samples": [f"{node_id-4}",0],
+                "vae": ["1", 2]
+            },
+            "class_type": "VAEDecode",
+            "_meta": {
+            "title": "VAE解码"
+            }
+        }
+        self.node_counter += 1
+        return node_id
+
+    def add_save_image(self) -> int:
+        node_id = self.node_counter
+        self.workflow[str(node_id)] = {
+            "inputs": {
+                "filename_prefix": "ComfyUI",
+                "images": [f"{node_id-1}", 0]
             },
             "class_type": "SaveImage",
             "_meta": {
