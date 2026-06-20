@@ -122,10 +122,6 @@ class MyPlugin(Star):
                                  \n其他lord_2:{other_2_lord},模型力度:{other_2_lord_model_Strength},cilp力度:{other_2_lord_cilp_Strength}""")
     
 
-
-        
-        
-
     @filter.command_group("模型")
     def loar(self):
         pass
@@ -330,11 +326,6 @@ class MyPlugin(Star):
         else:
             yield event.plain_result(f"无效的输入，请输入启用/禁用")
 
-    
-        
-        
-
-        
     @filter.command("生成图片")
     async def qqbot_ComfyUI(self, event: AstrMessageEvent,):
         
@@ -437,10 +428,6 @@ class MyPlugin(Star):
                     yield event.plain_result(f"图片已生成并保存为 generated_{filename}")
                     yield event.image_result(f"{image_path}/generated_{filename}")
                 
-                
-            
-               
-         
-
+        
     async def terminate(self):
         """可选择实现异步的插件销毁方法，当插件被卸载/停用时会调用。"""

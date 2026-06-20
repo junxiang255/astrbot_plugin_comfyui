@@ -1,6 +1,8 @@
 # astrbot_plugin_ComfyUI_SDXL
 
 调用本地部署的ComfyUI_SDXL_API
+代码里面的模型变量需要更换为本地已有模型(这只是个半成品，根据实际情况修改mian.py)
+
 > [!NOTE]
 > This repo is just a template of [AstrBot](https://github.com/AstrBotDevs/AstrBot) Plugin.
 > 
