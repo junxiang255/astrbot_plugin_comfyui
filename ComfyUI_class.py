@@ -1,4 +1,4 @@
-import requests
+import httpx
 import json
 import time
 import uuid
@@ -11,7 +11,7 @@ class ComfyUIClient:
 
     def get_system_stats(self) -> Dict[str, Any]:
         """获取系统状态"""
-        response = requests.get(f"{self.base_url}/system_stats")
+        response =httpx.get(f"{self.base_url}/system_stats")
         print(self.base_url)
         # print(response.json())
         system_stats=response.json()
@@ -22,7 +22,7 @@ class ComfyUIClient:
         return response.json()
     def get_queue_status(self) -> Dict[str, Any]:
         """获取队列状态"""
-        response = requests.get(f"{self.base_url}/queue")
+        response =httpx.get(f"{self.base_url}/queue")
         queue=response.json()
         print(queue)
         return response.json()
@@ -32,23 +32,23 @@ class ComfyUIClient:
             "prompt": workflow,
             "client_id": self.client_id
         }
-        response = requests.post(f"{self.base_url}/prompt", json=payload)
+        response =httpx.post(f"{self.base_url}/prompt", json=payload)
         result = response.json()
         return result["prompt_id"]
 
     def get_history(self, prompt_id: Optional[str] = None) -> Dict[str, Any]:
 
         if prompt_id:
-            response = requests.get(f"{self.base_url}/history/{prompt_id}")
+            response =httpx.get(f"{self.base_url}/history/{prompt_id}")
         else:
-            response = requests.get(f"{self.base_url}/history")
+            response =httpx.get(f"{self.base_url}/history")
         return response.json()
 
     def upload_image(self, image_path: str) -> Dict[str, Any]:
         with open(image_path, 'rb') as f:
             files = {'image': f}
             data = {'overwrite': 'true'}
-            response = requests.post(
+            response =httpx.post(
                 f"{self.base_url}/upload/image",
                 files=files,
                 data=data
@@ -62,7 +62,7 @@ class ComfyUIClient:
             'subfolder': subfolder,
             'type': image_type
         }
-        response = requests.get(f"{self.base_url}/view", params=params)
+        response =httpx.get(f"{self.base_url}/view", params=params)
         return response.content
 
     def wait_for_completion(self, prompt_id: str, timeout: int = 300) -> Dict[str, Any]:
@@ -87,7 +87,7 @@ class ComfyUIClient:
     def cancel_task(self, prompt_id: str) -> bool:
         """取消任务"""
         payload = {"delete": [prompt_id]}
-        response = requests.post(f"{self.base_url}/queue", json=payload)
+        response =httpx.post(f"{self.base_url}/queue", json=payload)
         return response.status_code == 200
 class WorkflowBuilder:
     def __init__(self):
